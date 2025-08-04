@@ -1,4 +1,4 @@
-package com.custom.provision;
+package com.custom.provision.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,5 +29,14 @@ public class WelcomeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public static WelcomeFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        WelcomeFragment fragment = new WelcomeFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 }

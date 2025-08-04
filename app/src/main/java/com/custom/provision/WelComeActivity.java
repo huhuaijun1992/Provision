@@ -10,17 +10,22 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.custom.provision.fragment.LanguageSettingFragment;
+import com.custom.provision.fragment.WelcomeFragment;
 
 public class WelComeActivity extends AppCompatActivity {
     private static final String TAG = WelComeActivity.class.getName();
-    private WelcomeFragment welcomeFragment = new WelcomeFragment();
+    private WelcomeFragment welcomeFragment;
     private LanguageSettingFragment languageSettingFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        finishSetup();
+//        finishSetup();
     }
 
     private void finishSetup() {
@@ -48,10 +53,19 @@ public class WelComeActivity extends AppCompatActivity {
 
     private void showFragment(Operation operation){
         FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment =null;
         switch (operation){
             case welcome:
+                if (welcomeFragment ==null){
+                    welcomeFragment = WelcomeFragment.newInstance();
+                }
+
                 break;
             case languge:
+                if (languageSettingFragment ==null){
+                    languageSettingFragment = LanguageSettingFragment.newInstance();
+                }
                 break;
             case country:
                 break;
