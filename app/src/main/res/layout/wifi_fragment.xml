@@ -8,9 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="222px"
-        android:drawableTop="@drawable/language_icon"
+        android:drawableTop="@drawable/wifi_icon"
         android:drawablePadding="20px"
-        android:text="@string/language_setting"
+        android:text="@string/choose_wifi"
         android:textColor="#333333"
         android:textSize="54px"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,16 +18,30 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_language"
+        android:id="@+id/rv_wifi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="627px"
         android:orientation="vertical"
         android:paddingHorizontal="100px"
-        app:layout_constraintBottom_toTopOf="@id/bottom_view"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_view"
+        />
+
+    <TextView
+        android:id="@+id/tv_no_wifi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="811px"
+        android:textColor="@color/grey_A0"
+        android:textSize="44px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        />
 
     <include
         android:id="@+id/bottom_view"
@@ -36,7 +50,5 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        />
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

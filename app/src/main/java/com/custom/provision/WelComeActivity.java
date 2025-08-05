@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.custom.provision.fragment.LanguageSettingFragment;
 import com.custom.provision.fragment.WelcomeFragment;
+import com.custom.provision.manager.WifiManager;
 
 public class WelComeActivity extends AppCompatActivity {
     private static final String TAG = WelComeActivity.class.getName();
@@ -25,6 +26,7 @@ public class WelComeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
 //        finishSetup();
     }
 
@@ -51,7 +53,7 @@ public class WelComeActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showFragment(Operation operation){
+    public void showFragment(Operation operation){
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment =null;
@@ -85,6 +87,10 @@ public class WelComeActivity extends AppCompatActivity {
         String value = Settings.Secure.getString(resolver, property);
         Log.w(TAG, "Using value " + overriddenValue + " for property " + property);
         return value;
+    }
+
+    private void init(){
+        WifiManager.getInstance().init(this);
     }
 
 

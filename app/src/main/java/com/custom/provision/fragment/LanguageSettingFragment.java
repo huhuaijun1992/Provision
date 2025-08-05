@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.custom.provision.adapter.LanguageAdapter;
 import com.custom.provision.databinding.LanguageSettingFragmentBinding;
 import com.custom.provision.utils.VerticalSpaceItemDecoration;
 
