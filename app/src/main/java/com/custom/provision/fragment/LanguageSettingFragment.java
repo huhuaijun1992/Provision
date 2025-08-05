@@ -10,12 +10,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.custom.provision.Operation;
+import com.custom.provision.R;
+import com.custom.provision.WelComeActivity;
 import com.custom.provision.adapter.LanguageAdapter;
 import com.custom.provision.databinding.LanguageSettingFragmentBinding;
 import com.custom.provision.utils.VerticalSpaceItemDecoration;
 
 
-public class LanguageSettingFragment extends Fragment implements View.OnClickListener{
+public class LanguageSettingFragment extends Fragment implements View.OnClickListener {
     LanguageSettingFragmentBinding binding;
     LanguageAdapter adapter;
 
@@ -27,7 +30,7 @@ public class LanguageSettingFragment extends Fragment implements View.OnClickLis
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         binding =  LanguageSettingFragmentBinding.inflate(inflater);
+        binding = LanguageSettingFragmentBinding.inflate(inflater);
         return binding.getRoot();
     }
 
@@ -49,25 +52,25 @@ public class LanguageSettingFragment extends Fragment implements View.OnClickLis
     }
 
 
-    private void init(){
-     adapter = new LanguageAdapter(getContext());
-     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-     binding.rvLanguage.setLayoutManager(linearLayoutManager);
-     binding.rvLanguage.addItemDecoration(new VerticalSpaceItemDecoration(40));
-     binding.rvLanguage.setAdapter(adapter);
+    private void init() {
+        adapter = new LanguageAdapter(getContext());
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        binding.rvLanguage.setLayoutManager(linearLayoutManager);
+        binding.rvLanguage.addItemDecoration(new VerticalSpaceItemDecoration(40));
+        binding.rvLanguage.setAdapter(adapter);
 
     }
 
-    private void initListener(){
+    private void initListener() {
         binding.bottomView.tvBack.setOnClickListener(this::onClick);
         binding.bottomView.tvNext.setOnClickListener(this::onClick);
     }
 
     public static LanguageSettingFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
+
         LanguageSettingFragment fragment = new LanguageSettingFragment();
         fragment.setArguments(args);
         return fragment;
@@ -75,6 +78,14 @@ public class LanguageSettingFragment extends Fragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        WelComeActivity activity;
+        activity = (WelComeActivity) getActivity();
+        int id = v.getId();
+        if (id == R.id.tv_next){
+            activity.showFragment(Operation.region);
+        }else if (id == R.id.tv_back){
+            activity.showFragment(Operation.welcome);
+        }
 
     }
 }

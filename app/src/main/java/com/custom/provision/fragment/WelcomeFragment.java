@@ -9,7 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class WelcomeFragment extends Fragment {
+import com.custom.provision.Operation;
+import com.custom.provision.WelComeActivity;
+import com.custom.provision.databinding.WelcomeFragmentBinding;
+
+public class WelcomeFragment extends Fragment{
+    WelcomeFragmentBinding binding;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,12 +23,19 @@ public class WelcomeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        binding =WelcomeFragmentBinding.inflate(inflater,container,false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        binding.welcomeNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((WelComeActivity)getActivity()).showFragment(Operation.languge);
+            }
+        });
     }
 
     @Override

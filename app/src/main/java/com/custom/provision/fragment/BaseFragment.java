@@ -40,6 +40,7 @@ public abstract class BaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         initView();
         initListeners();
+        initData();
     }
 
     @Override

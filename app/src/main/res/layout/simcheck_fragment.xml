@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_sim_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="222px"
+        android:drawableTop="@drawable/region_icon"
+        android:drawablePadding="20px"
+        android:layout_marginHorizontal="100dp"
+        android:text="@string/sim_checking"
+        android:textColor="#333333"
+        android:textSize="54px"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sim_check"
+        android:layout_marginTop="20px"
+        android:textSize="28px"
+        android:textColor="@color/grey_A0"
+        android:text="@string/sim_unchecked_tip"
+        android:visibility="gone"
+        />
+
+    <include
+        android:id="@+id/bottom_view"
+        layout="@layout/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100px"
+        android:layout_marginBottom="110px"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

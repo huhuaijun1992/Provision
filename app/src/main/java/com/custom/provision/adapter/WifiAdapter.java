@@ -11,12 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.custom.provision.R;
-import com.custom.provision.entity.LanguageOption;
 import com.custom.provision.entity.WifiNetwork;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
     private Context context;
@@ -30,7 +28,7 @@ public class WifiAdapter extends RecyclerView.Adapter<WifiAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_language_layout,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_layout,parent,false);
         return new ViewHolder(view);
     }
 

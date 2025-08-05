@@ -49,7 +49,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        WifiManager.getInstance().getWifiNetworks().removeObservers(getViewLifecycleOwner());
+        WifiManager.getInstance().getWifiNetworks().removeObservers(this);
     }
 
     @Override
@@ -80,6 +80,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
                 binding.rvWifi.setVisibility(wifiNetworks.isEmpty() ? GONE : VISIBLE);
                 binding.tvNoWifi.setVisibility(wifiNetworks.isEmpty() ? VISIBLE : GONE);
                 binding.bottomView.tvNext.setVisibility(wifiNetworks.isEmpty() ? GONE : VISIBLE);
+                binding.bottomView.tvSkip.setVisibility(wifiNetworks.isEmpty() ? VISIBLE : GONE);
             }
         });
     }
@@ -104,7 +105,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
         if (id == R.id.tv_next) {
             ((WelComeActivity) getActivity()).showFragment(Operation.checkSim);
         } else if (id == R.id.tv_back) {
-            ((WelComeActivity) getActivity()).showFragment(Operation.country);
+            ((WelComeActivity) getActivity()).showFragment(Operation.region);
         } else if (id == R.id.tv_skip) {
             ((WelComeActivity) getActivity()).showFragment(Operation.checkSim);
         }

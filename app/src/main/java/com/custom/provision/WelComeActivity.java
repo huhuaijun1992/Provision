@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,23 +16,35 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.custom.provision.fragment.LanguageSettingFragment;
+import com.custom.provision.fragment.RegionFragment;
+import com.custom.provision.fragment.SimCheckFragment;
 import com.custom.provision.fragment.WelcomeFragment;
+import com.custom.provision.fragment.WifiFragment;
 import com.custom.provision.manager.WifiManager;
 
 public class WelComeActivity extends AppCompatActivity {
     private static final String TAG = WelComeActivity.class.getName();
     private WelcomeFragment welcomeFragment;
     private LanguageSettingFragment languageSettingFragment;
+    private WifiFragment wifiFragment;
+    private RegionFragment regionFragment;
+    private SimCheckFragment simCheckFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.welcome_activity);
         init();
+        showFragment(Operation.welcome);
 //        finishSetup();
     }
 
-    private void finishSetup() {
-        setProvisioningState();
+    public void finishSetup() {
+        try {
+            setProvisioningState();
+        }catch (Exception e){
+            Toast.makeText(this,"权限错误",Toast.LENGTH_SHORT).show();
+        }
         disableSelfAndFinish();
     }
 
@@ -53,33 +66,51 @@ public class WelComeActivity extends AppCompatActivity {
         finish();
     }
 
-    public void showFragment(Operation operation){
+    public void showFragment(Operation operation) {
+        showFragment(operation, null);
+    }
+
+    public void showFragment(Operation operation, Bundle args) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment =null;
-        switch (operation){
+        Fragment fragment = null;
+        switch (operation) {
             case welcome:
-                if (welcomeFragment ==null){
+                if (welcomeFragment == null) {
                     welcomeFragment = WelcomeFragment.newInstance();
                 }
-
+                fragment = welcomeFragment;
                 break;
             case languge:
-                if (languageSettingFragment ==null){
+                if (languageSettingFragment == null) {
                     languageSettingFragment = LanguageSettingFragment.newInstance();
                 }
+                fragment = languageSettingFragment;
                 break;
-            case country:
+            case region:
+                if (regionFragment == null) {
+                    regionFragment = RegionFragment.newInstance();
+                }
+                fragment = regionFragment;
                 break;
             case wifySetting:
+                if (wifiFragment == null) {
+                    wifiFragment = new WifiFragment();
+                }
+                fragment = wifiFragment;
                 break;
             case checkSim:
+                if (simCheckFragment == null) {
+                    simCheckFragment = SimCheckFragment.newInstance(null);
+                }
+                fragment = simCheckFragment;
                 break;
         }
+        fragmentTransaction.replace(R.id.fragment_content, fragment, operation.name()).commit();
     }
 
     private String getSettings(ContentResolver resolver, String property,
-                              String overriddenValue) {
+                               String overriddenValue) {
         if (overriddenValue != null) {
             Log.w(TAG, "Using OVERRIDDEN value " + overriddenValue + " for property " + property);
             return overriddenValue;
@@ -89,7 +120,7 @@ public class WelComeActivity extends AppCompatActivity {
         return value;
     }
 
-    private void init(){
+    private void init() {
         WifiManager.getInstance().init(this);
     }
 
