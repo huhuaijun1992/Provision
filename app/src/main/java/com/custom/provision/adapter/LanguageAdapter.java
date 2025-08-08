@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.custom.provision.R;
 import com.custom.provision.entity.LanguageOption;
+import com.custom.provision.utils.ClickUtils;
+import com.custom.provision.utils.LanguageUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +44,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
         return languageOptions.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         View itemRoot;
         TextView tvLanguageName;
         ImageView imgSelect;
@@ -52,6 +54,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
             itemRoot = itemView.findViewById(R.id.item_root);
             tvLanguageName = itemView.findViewById(R.id.tv_language_name);
             imgSelect = itemView.findViewById(R.id.img_select);
+            itemRoot.setOnClickListener(this);
         }
 
         public void bind(LanguageOption languageOption, int position){
@@ -65,5 +68,12 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
             }
         }
 
+        @Override
+        public void onClick(View v) {
+            if (ClickUtils.isFastClick()) {
+                return;
+            }
+//            LanguageUtils.set(languageOptions.get(getAdapterPosition()).set);
+        }
     }
 }

@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="160px"
         android:layout_marginHorizontal="100px"
-        android:layout_marginTop="627dp"
+        android:layout_marginTop="627px"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,8 +45,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_region"
         android:layout_width="match_parent"
-        android:layout_height="760px"
+        android:layout_height="match_parent"
         android:layout_marginTop="947px"
+        android:layout_marginBottom="212px"
         android:orientation="vertical"
         android:paddingHorizontal="100px"
         app:layout_constraintEnd_toEndOf="parent"

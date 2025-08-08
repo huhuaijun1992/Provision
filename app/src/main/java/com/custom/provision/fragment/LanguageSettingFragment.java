@@ -18,14 +18,10 @@ import com.custom.provision.databinding.LanguageSettingFragmentBinding;
 import com.custom.provision.utils.VerticalSpaceItemDecoration;
 
 
-public class LanguageSettingFragment extends Fragment implements View.OnClickListener {
+public class LanguageSettingFragment extends BaseFragment implements View.OnClickListener {
     LanguageSettingFragmentBinding binding;
     LanguageAdapter adapter;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     @Nullable
     @Override
@@ -35,24 +31,13 @@ public class LanguageSettingFragment extends Fragment implements View.OnClickLis
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init();
-        initListener();
+    public View getContentView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
+        binding = LanguageSettingFragmentBinding.inflate(inflater);
+        return binding.getRoot();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-
-    private void init() {
+    public void initView() {
         adapter = new LanguageAdapter(getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -62,10 +47,18 @@ public class LanguageSettingFragment extends Fragment implements View.OnClickLis
 
     }
 
-    private void initListener() {
+    @Override
+    public void initListeners() {
         binding.bottomView.tvBack.setOnClickListener(this::onClick);
         binding.bottomView.tvNext.setOnClickListener(this::onClick);
+
     }
+
+    @Override
+    public void initData() {
+
+    }
+
 
     public static LanguageSettingFragment newInstance() {
 
@@ -81,9 +74,9 @@ public class LanguageSettingFragment extends Fragment implements View.OnClickLis
         WelComeActivity activity;
         activity = (WelComeActivity) getActivity();
         int id = v.getId();
-        if (id == R.id.tv_next){
+        if (id == R.id.tv_next) {
             activity.showFragment(Operation.region);
-        }else if (id == R.id.tv_back){
+        } else if (id == R.id.tv_back) {
             activity.showFragment(Operation.welcome);
         }
 

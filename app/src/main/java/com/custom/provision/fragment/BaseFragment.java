@@ -21,7 +21,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach:");
+        Log.d(TAG, "onAttach:"+ this.getClass().getSimpleName());
     }
 
     @Override

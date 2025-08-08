@@ -13,23 +13,22 @@ import com.custom.provision.Operation;
 import com.custom.provision.WelComeActivity;
 import com.custom.provision.databinding.WelcomeFragmentBinding;
 
-public class WelcomeFragment extends Fragment{
+public class WelcomeFragment extends BaseFragment{
     WelcomeFragmentBinding binding;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View getContentView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container) {
         binding =WelcomeFragmentBinding.inflate(inflater,container,false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void initView() {
+
+    }
+
+    @Override
+    public void initListeners() {
         binding.welcomeNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,8 +38,8 @@ public class WelcomeFragment extends Fragment{
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void initData() {
+
     }
 
     public static WelcomeFragment newInstance() {

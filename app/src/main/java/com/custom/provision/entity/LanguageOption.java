@@ -29,7 +29,7 @@ public class LanguageOption {
         return Arrays.asList(
                 new LanguageOption("中文简体",Locale.CHINA),
                 new LanguageOption("中文繁體", Locale.TRADITIONAL_CHINESE),
-                new LanguageOption("English",Locale.US),
+                new LanguageOption("English",Locale.ENGLISH),
                 new LanguageOption("한국어", Locale.KOREA),
                 new LanguageOption("日本語", Locale.JAPAN)
         );
