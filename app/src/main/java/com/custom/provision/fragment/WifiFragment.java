@@ -4,11 +4,12 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
     private static final int PERMISSIONS_REQUEST_CODE = 100;
     WifiFragmentBinding binding;
     WifiAdapter adapter;
+    private boolean isPasswordVisible = false;
 
 
     @Override
@@ -51,7 +53,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
 //                Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
 //                getActivity().startActivity(panelIntent);
 //            }else {
-                WifiInstance.getInstance().startScan();
+            WifiInstance.getInstance().startScan();
 //            }
 
         }
@@ -81,15 +83,20 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void initView() {
+
+        binding.imgPasswordShow.setOnClickListener(this);
         binding.bottomView.tvNext.setOnClickListener(this);
         binding.bottomView.tvBack.setOnClickListener(this);
         binding.bottomView.tvSkip.setOnClickListener(this);
+        binding.cancle.setOnClickListener(this);
+        binding.connect.setOnClickListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         binding.rvWifi.setLayoutManager(linearLayoutManager);
         binding.rvWifi.addItemDecoration(new VerticalSpaceItemDecoration(40));
         adapter = new WifiAdapter(getContext());
         binding.rvWifi.setAdapter(adapter);
+        binding.connect.setSelected(true);
     }
 
     @Override
@@ -105,11 +112,19 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
                 binding.bottomView.tvSkip.setVisibility(wifiNetworks.isEmpty() ? VISIBLE : GONE);
             }
         });
+        WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().observe(getViewLifecycleOwner(), new Observer<WifiNetwork>() {
+            @Override
+            public void onChanged(WifiNetwork wifiNetwork) {
+                if (wifiNetwork !=null && binding.password.getVisibility() == GONE){
+                    binding.tvWifiName.setText(getString(R.string.input_wifi_pass_tip, wifiNetwork.ssid));
+                    binding.password.setVisibility(VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
     public void initData() {
-
 
     }
 
@@ -167,6 +182,19 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
             ((WelComeActivity) getActivity()).showFragment(Operation.region);
         } else if (id == R.id.tv_skip) {
             ((WelComeActivity) getActivity()).showFragment(Operation.checkSim);
+        }else if (id == R.id.img_password_show){
+            togglePasswordVisibility();
+        }else if (id == R.id.cancle){
+            binding.password.setVisibility(GONE);
+            WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().setValue(null);
+        }else if (id == R.id.connect){
+             String password = binding.editPassword.getText().toString();
+             if (TextUtils.isEmpty(password)){
+                  Toast.makeText(getContext(),R.string.password_empty_tip,Toast.LENGTH_SHORT).show();
+             }else {
+                 binding.password.setVisibility(GONE);
+                 WifiInstance.getInstance().connect(getContext(),WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().getValue().scanResult, binding.editPassword.getText().toString());
+             }
         }
     }
 
@@ -192,5 +220,23 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
                 // 可以在这里再次请求权限或解释为什么需要这些权限
             }
         }
+    }
+
+    private void togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible;
+
+        // 切换输入类型
+        if (isPasswordVisible) {
+            // 显示明文
+            binding.editPassword.setInputType(
+                    InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        } else {
+            // 显示密文
+            binding.editPassword.setInputType(
+                    InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+
+        // 将光标移动到文本末尾
+        binding.editPassword.setSelection(binding.editPassword.getText().length());
     }
 }

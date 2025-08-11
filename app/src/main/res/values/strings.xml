@@ -14,4 +14,9 @@
     <string name="sim_checked">已检测到SIM卡</string>
     <string name="sim_unchecked">未检测到SIM卡</string>
     <string name="sim_unchecked_tip">如果您有 SIM 卡，请现在插入</string>
+    <string name="input_wifi_pass_tip">输入“%s”密码</string>
+    <string name="password_empty_tip">密码不能为空</string>
+    <string name="wifi_cancel">取消</string>
+    <string name="wifi_connect">连接</string>
+
 </resources>

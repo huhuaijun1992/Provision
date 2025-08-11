@@ -3,14 +3,22 @@ package com.custom.provision;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -29,6 +37,7 @@ public class WelComeActivity extends AppCompatActivity {
     private WifiFragment wifiFragment;
     private RegionFragment regionFragment;
     private SimCheckFragment simCheckFragment;
+    private View rootLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,8 +45,35 @@ public class WelComeActivity extends AppCompatActivity {
         setContentView(R.layout.welcome_activity);
         init();
         showFragment(Operation.welcome);
+        ViewGroup rootView = findViewById(android.R.id.content);
+        final View contentView = rootView.getChildAt(0); // 页面内容根布局，调整它的高度
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            private int lastHeight = 0;
+
+            @Override
+            public void onGlobalLayout() {
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+                int screenHeight = rootView.getRootView().getHeight();
+                int keypadHeight = screenHeight - r.bottom;
+
+                int newHeight = screenHeight - keypadHeight;
+
+                if (newHeight != lastHeight) {
+                    lastHeight = newHeight;
+
+                    // 动态设置内容布局高度
+                    ViewGroup.LayoutParams lp = contentView.getLayoutParams();
+                    lp.height = newHeight;
+                    contentView.setLayoutParams(lp);
+                }
+            }
+        });
+
 //        finishSetup();
     }
+
 
     public void finishSetup() {
         try {
@@ -52,7 +88,7 @@ public class WelComeActivity extends AppCompatActivity {
         Log.i(TAG, "Setting provisioning state");
         // Add a persistent setting to allow other apps to know the device has been provisioned.
         Settings.Global.putInt(getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 1);
-        Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
+        Settings.Secure.putInt(getContentResolver(), Settings.Secure. USER_SETUP_COMPLETE, 1);
     }
 
     private void disableSelfAndFinish() {
