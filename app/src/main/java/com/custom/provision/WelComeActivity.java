@@ -20,7 +20,7 @@ import com.custom.provision.fragment.RegionFragment;
 import com.custom.provision.fragment.SimCheckFragment;
 import com.custom.provision.fragment.WelcomeFragment;
 import com.custom.provision.fragment.WifiFragment;
-import com.custom.provision.manager.WifiManager;
+import com.custom.provision.manager.WifiInstance;
 
 public class WelComeActivity extends AppCompatActivity {
     private static final String TAG = WelComeActivity.class.getName();
@@ -121,7 +121,7 @@ public class WelComeActivity extends AppCompatActivity {
     }
 
     private void init() {
-        WifiManager.getInstance().init(this);
+        WifiInstance.getInstance().init(this);
     }
 
 

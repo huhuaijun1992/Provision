@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
  * Function:
  */
 public abstract class BaseFragment extends Fragment {
-    private static final String TAG = BaseFragment.class.getSimpleName();
+    public static final String TAG = BaseFragment.class.getSimpleName();
 
     @Override
     public void onAttach(@NonNull Context context) {

@@ -1,6 +1,7 @@
 package com.custom.provision.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +60,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
         public void bind(LanguageOption languageOption, int position){
             tvLanguageName.setText(languageOption.getLabel());
+            Log.d("LanguageAdapter", "bind: "+ Locale.getDefault().getCountry());
             if (Locale.getDefault().getCountry().equals(languageOption.getLocale().getCountry())){
                 itemRoot.setSelected(true);
                 imgSelect.setVisibility(View.VISIBLE);
