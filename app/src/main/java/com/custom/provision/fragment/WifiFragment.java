@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
@@ -115,7 +116,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
         WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().observe(getViewLifecycleOwner(), new Observer<WifiNetwork>() {
             @Override
             public void onChanged(WifiNetwork wifiNetwork) {
-                if (wifiNetwork !=null && binding.password.getVisibility() == GONE){
+                if (wifiNetwork != null && binding.password.getVisibility() == GONE) {
                     binding.tvWifiName.setText(getString(R.string.input_wifi_pass_tip, wifiNetwork.ssid));
                     binding.password.setVisibility(VISIBLE);
                 }
@@ -182,19 +183,24 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
             ((WelComeActivity) getActivity()).showFragment(Operation.region);
         } else if (id == R.id.tv_skip) {
             ((WelComeActivity) getActivity()).showFragment(Operation.checkSim);
-        }else if (id == R.id.img_password_show){
+        } else if (id == R.id.img_password_show) {
             togglePasswordVisibility();
-        }else if (id == R.id.cancle){
+        } else if (id == R.id.cancle) {
             binding.password.setVisibility(GONE);
+            binding.editPassword.setText("");
             WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().setValue(null);
-        }else if (id == R.id.connect){
-             String password = binding.editPassword.getText().toString();
-             if (TextUtils.isEmpty(password)){
-                  Toast.makeText(getContext(),R.string.password_empty_tip,Toast.LENGTH_SHORT).show();
-             }else {
-                 binding.password.setVisibility(GONE);
-                 WifiInstance.getInstance().connect(getContext(),WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().getValue().scanResult, binding.editPassword.getText().toString());
-             }
+        } else if (id == R.id.connect) {
+            String password = binding.editPassword.getText().toString();
+            if (TextUtils.isEmpty(password)) {
+                Toast.makeText(getContext(), R.string.password_empty_tip, Toast.LENGTH_SHORT).show();
+            } else {
+                binding.password.setVisibility(GONE);
+                WifiNetwork wifiNetwork = WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().getValue();
+//                 WifiInstance.getInstance().connectToWifi(wifiNetwork.getSsid(),binding.editPassword.getText().toString(),wifiNetwork.getwifiEncryptionType());
+                WifiInstance.getInstance().connect(getContext(), wifiNetwork.scanResult, binding.editPassword.getText().toString());
+                binding.editPassword.setText("");
+
+            }
         }
     }
 

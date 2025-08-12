@@ -19,11 +19,13 @@ import android.net.wifi.WifiNetworkSuggestion;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.executor.ArchTaskExecutor;
 import androidx.lifecycle.MutableLiveData;
 
 import com.custom.provision.entity.WifiNetwork;
@@ -48,12 +50,25 @@ public class WifiInstance {
 
 
     WifiReceiver wifiReceiver;
-    android.net.wifi.WifiManager mWifiManager;
+    WifiManager mWifiManager;
     Context context;
     MutableLiveData<List<WifiNetwork>> wifiNetworks = new MutableLiveData<>(new ArrayList<WifiNetwork>());
 
     HandlerThread handlerThread = new HandlerThread("asyncThread");
     Handler handler;
+    ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
+        @Override
+        public void onLost(Network network) {
+            Log.d(TAG, "Wi-Fi 已断开");
+        }
+
+        @Override
+        public void onAvailable(@NonNull Network network) {
+            super.onAvailable(network);
+            Log.d(TAG, "Wi-Fi 已连接");
+            updateWifiList();
+        }
+    };
 
     public MutableLiveData<WifiNetwork> currentWaitConnectWifiNetwork = new MutableLiveData<>();
 
@@ -68,9 +83,10 @@ public class WifiInstance {
         return SingletonHolder.INSTANCE;
     }
 
+
     public void init(Context context) {
         this.context = context.getApplicationContext();
-        mWifiManager = (android.net.wifi.WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         handlerThread.start();
         handler = new Handler(handlerThread.getLooper()){
             @Override
@@ -171,101 +187,62 @@ public class WifiInstance {
                 return Integer.compare(b.level, a.level);
             }
         });
+           if (Looper.getMainLooper().getThread() == Thread.currentThread()){
+               wifiNetworks.setValue(scanned);
+           }else {
+               wifiNetworks.postValue(scanned);
+           }
 
-        wifiNetworks.setValue(scanned);
     }
 
-//    /**
-//     * 连接到指定WiFi网络
-//     * @param ssid 网络SSID
-//     * @param password 密码
-//     * @param encryptionType 加密类型 (WEP, WPA, WPA2, OPEN)
-//     * @return true表示连接请求已发送成功
-//     */
-//    public boolean connectToWifi(String ssid, String password, String encryptionType) {
-//        if (mWifiManager == null) {
-//            Log.e(TAG, "WifiManager is not initialized");
-//            return false;
-//        }
-//
-//        // 确保WiFi已开启
-//        if (!mWifiManager.isWifiEnabled()) {
-//            boolean enabled = mWifiManager.setWifiEnabled(true);
-//            if (!enabled) {
-//                Log.e(TAG, "Failed to enable WiFi");
-//                return false;
-//            }
-//            // 等待WiFi启用
-//            try {
-//                Thread.sleep(1000);
-//            } catch (InterruptedException e) {
-//                Thread.currentThread().interrupt();
-//            }
-//        }
-//
-//        // 创建WiFi配置
-//        WifiConfiguration wifiConfig = new WifiConfiguration();
-//        wifiConfig.SSID = "\"" + ssid + "\"";
-//
-//        // 根据加密类型设置配置
-//        switch (encryptionType.toUpperCase()) {
-//            case "WEP":
-//                wifiConfig.wepKeys[0] = "\"" + password + "\"";
-//                wifiConfig.wepTxKeyIndex = 0;
-//                wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-//                wifiConfig.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
-//                break;
-//            case "WPA":
-//            case "WPA2":
-//                wifiConfig.preSharedKey = "\"" + password + "\"";
-//                break;
-//            case "NONE":
-//            case "OPEN":
-//                wifiConfig.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
-//                break;
-//            default:
-//                Log.e(TAG, "Unsupported encryption type: " + encryptionType);
-//                return false;
-//        }
-//
-//        // 添加网络配置
-//        int netId = mWifiManager.addNetwork(wifiConfig);
-//        if (netId == -1) {
-//            Log.e(TAG, "Failed to add network configuration");
-//            return false;
-//        }
-//
-//        // 启用网络
-//        mWifiManager.disconnect();
-//        boolean success = mWifiManager.enableNetwork(netId, true);
-//        mWifiManager.reconnect();
-//
-//        Log.d(TAG, "WiFi connection " + (success ? "initiated" : "failed"));
-//        return success;
-//    }
-//
-//    /**
-//     * 断开当前WiFi连接
-//     * @return true表示断开成功
-//     */
-//    public boolean disconnectFromWifi() {
-//        if (mWifiManager == null) {
-//            Log.e(TAG, "WifiManager is not initialized");
-//            return false;
-//        }
-//
-//        // 检查当前是否已连接
-//        WifiInfo connectionInfo = mWifiManager.getConnectionInfo();
-//        if (connectionInfo == null || connectionInfo.getNetworkId() == -1) {
-//            Log.d(TAG, "Not currently connected to any WiFi");
-//            return false;
-//        }
-//
-//        // 断开连接
-//        boolean success = mWifiManager.disconnect();
-//        Log.d(TAG, "WiFi disconnection " + (success ? "successful" : "failed"));
-//        return success;
-//    }
+    /**
+     * 连接到指定WiFi网络
+     * @param ssid 网络SSID
+     * @param password 密码
+     * @param encryptionType 加密类型 (WEP, WPA, WPA2, OPEN)
+     * @return true表示连接请求已发送成功
+     */
+    public boolean connectToWifi(String ssid, String password, String encryptionType) {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiConfiguration config = new WifiConfiguration();
+        config.SSID = "\"" + ssid + "\""; // SSID 需要加引号
+
+        // 根据加密方式设置
+        switch (encryptionType.toUpperCase()) {
+            case "WPA2":
+            case "WPA3":
+                config.preSharedKey = "\"" + password + "\"";
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                break;
+            case "WEP":
+                config.wepKeys[0] = "\"" + password + "\"";
+                config.wepTxKeyIndex = 0;
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                break;
+            default: // 开放网络
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        }
+
+        // 添加并连接网络
+        int netId = wifiManager.addNetwork(config);
+        if (netId != -1) {
+            wifiManager.enableNetwork(netId, true); // true 表示强制连接
+            wifiManager.saveConfiguration(); // 保存配置（可选）
+            Log.d(TAG, "Wi-Fi 配置添加成功: " + ssid);
+        } else {
+            Log.e(TAG, "Wi-Fi 配置添加失败");
+        }
+
+        // 启用网络
+        mWifiManager.disconnect();
+        boolean success = mWifiManager.enableNetwork(netId, true);
+        mWifiManager.reconnect();
+
+        Log.d(TAG, "WiFi connection " + (success ? "initiated" : "failed"));
+        return success;
+    }
+
 
     /**
      * 获取当前连接的WiFi信息
@@ -276,19 +253,6 @@ public class WifiInstance {
             return null;
         }
         return mWifiManager.getConnectionInfo();
-    }
-
-    /**
-     * 检查是否连接到指定SSID的WiFi
-     * @param ssid 要检查的SSID
-     * @return true表示已连接
-     */
-    public boolean isConnectedTo(String ssid) {
-        WifiInfo wifiInfo = getConnectedWifiInfo();
-        if (wifiInfo == null || wifiInfo.getSSID() == null) {
-            return false;
-        }
-        return wifiInfo.getSSID().replace("\"", "").equals(ssid);
     }
 
 
@@ -310,9 +274,10 @@ public class WifiInstance {
      * 断开 Wi-Fi（自动判断版本）
      */
     @SuppressLint("MissingPermission")
-    public static void disconnect(Context context, String SSID, String password) {
+    public  void disconnect(Context context, String SSID, String password) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             disconnectWithSuggestion(context, SSID, password);
+            disconnectWithSpecifier(context);
         } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) {
             disconnectWithSpecifier(context);
         } else {
@@ -354,8 +319,7 @@ public class WifiInstance {
 
         int networkId;
         if (existingConfig != null) {
-            existingConfig.preSharedKey = config.preSharedKey;
-            networkId = wifiManager.updateNetwork(existingConfig);
+            networkId = wifiManager.updateNetwork(config);
         } else {
             networkId = wifiManager.addNetwork(config);
         }
@@ -370,12 +334,12 @@ public class WifiInstance {
             return;
         }
 
-        boolean reconnect = wifiManager.reconnect();
-        if (!reconnect) {
-            Log.e(TAG, "Failed to reconnect to Wi-Fi");
-        } else {
-            Log.d(TAG, "Connecting to Wi-Fi SSID: " + scanResult.SSID);
-        }
+//        boolean reconnect = wifiManager.reconnect();
+//        if (!reconnect) {
+//            Log.e(TAG, "Failed to reconnect to Wi-Fi");
+//        } else {
+//            Log.d(TAG, "Connecting to Wi-Fi SSID: " + scanResult.SSID);
+//        }
     }
 
     @SuppressLint("MissingPermission")
@@ -407,65 +371,72 @@ public class WifiInstance {
                 .build();
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        cm.requestNetwork(request, new ConnectivityManager.NetworkCallback() {
-            @Override
-            public void onAvailable(Network network) {
-                cm.bindProcessToNetwork(network);
-                Log.d(TAG, "已连接 Wi-Fi（Android 10）: " + scanResult.SSID);
-                updateWifiList();
-            }
-        });
+        cm.requestNetwork(request, callback);
     }
 
     @SuppressLint("MissingPermission")
-    private static void disconnectWithSpecifier(Context context) {
+    private  void disconnectWithSpecifier(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        cm.bindProcessToNetwork(null);
+        NetworkRequest request = new NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+                .build();
+
+        // 注册回调监听断开事件
+        cm.requestNetwork(request, callback); // 会触发系统权限弹窗
+        cm.unregisterNetworkCallback(callback); // 立即取消请求以断开
         Log.d(TAG, "已断开 Wi-Fi（Android 10）");
     }
 
     // ---------------- Android 11+ ----------------
     @SuppressLint("MissingPermission")
-    private static void connectWithSuggestion(Context context, ScanResult scanResult, String password) {
-        WifiNetworkSuggestion.Builder builder = new WifiNetworkSuggestion.Builder()
-                .setSsid(scanResult.SSID);
+    private void connectWithSuggestion(Context context, ScanResult scanResult, String password) {
 
-        if (scanResult.capabilities.contains("WPA3")) {
-            builder.setWpa3Passphrase(password);
-        } else if (scanResult.capabilities.contains("WPA")) {
-            builder.setWpa2Passphrase(password);
-        } else {
-            builder.setIsHiddenSsid(false);
+        boolean  wifiNetworkSuggestionExist = false;
+        List<WifiNetworkSuggestion> networkSuggestions = mWifiManager.getNetworkSuggestions();
+        if (networkSuggestions != null && !networkSuggestions.isEmpty()) {
+            for (WifiNetworkSuggestion suggestion : networkSuggestions) {
+                if (suggestion.getSsid().equals(scanResult.SSID)) {
+                   wifiNetworkSuggestionExist = true;
+                    break;
+                }
+            }
         }
+        if (!wifiNetworkSuggestionExist){
+            Log.d(TAG, "connectWithSuggestion: 无wifi config 添加配置");
+            WifiNetworkSuggestion.Builder builder = new WifiNetworkSuggestion.Builder()
+                    .setSsid(scanResult.SSID);
+            if (scanResult.capabilities.contains("WPA3")) {
+                builder.setWpa3Passphrase(password);
+            } else if (scanResult.capabilities.contains("WPA")) {
+                builder.setWpa2Passphrase(password);
+            } else {
+                builder.setIsHiddenSsid(false);
+            }
 
-        WifiNetworkSuggestion suggestion = builder.build();
-        List<WifiNetworkSuggestion> suggestions = new ArrayList<>();
-        suggestions.add(suggestion);
-
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        int status = wifiManager.addNetworkSuggestions(suggestions);
-
-        if (status == WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
-            Log.d(TAG, "已添加 Wi-Fi 建议（Android 11+）: " + scanResult.SSID);
-        } else {
-            Log.e(TAG, "添加 Wi-Fi 建议失败: " + status);
+            WifiNetworkSuggestion suggestion = builder.build();
+            List<WifiNetworkSuggestion> suggestions = new ArrayList<>();
+            suggestions.add(suggestion);
+            int status = mWifiManager.addNetworkSuggestions(suggestions);
+            if (status == WifiManager.STATUS_NETWORK_SUGGESTIONS_SUCCESS) {
+                Log.d(TAG, "已添加 Wi-Fi 建议（Android 11+）: " + scanResult.SSID);
+                connectWithSpecifier(context, scanResult, password);
+            } else {
+                Log.e(TAG, "添加 Wi-Fi 建议失败: " + status);
+            }
+        }else {
+            Log.d(TAG, "connectWithSuggestion: 已有wifi配置，直接连接");
+            connectWithSpecifier(context,scanResult,password);
         }
-
     }
 
+
     @SuppressLint("MissingPermission")
-    private static void disconnectWithSuggestion(Context context, String SSID, String password) {
-        WifiNetworkSuggestion suggestion = new WifiNetworkSuggestion.Builder()
-                .setSsid(SSID)
-                .setWpa2Passphrase(password)
-                .build();
-
-        List<WifiNetworkSuggestion> suggestions = new ArrayList<>();
-        suggestions.add(suggestion);
-
-        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        wifiManager.removeNetworkSuggestions(suggestions);
-
+    private  void disconnectWithSuggestion(Context context, String SSID, String password) {
+        List<WifiNetworkSuggestion> suggestions = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            suggestions = mWifiManager.getNetworkSuggestions();
+            mWifiManager.removeNetworkSuggestions(suggestions);
+        }
         Log.d(TAG, "已移除 Wi-Fi 建议（Android 11+）: " + SSID);
     }
 
@@ -518,5 +489,26 @@ public class WifiInstance {
 
     public MutableLiveData<WifiNetwork> getCurrentWaitConnectWifiNetwork() {
         return currentWaitConnectWifiNetwork;
+    }
+
+    /**
+     * 获取 Wi-Fi 加密类型
+     * @param scanResult ScanResult 对象
+     * @return 加密类型（WPA3, WPA2, WEP, OPEN）
+     */
+    public static String getWifiEncryptionType(ScanResult scanResult) {
+        String capabilities = scanResult.capabilities.toUpperCase(); // 转大写方便判断
+
+        if (capabilities.contains("WPA3")) {
+            return "WPA3";
+        } else if (capabilities.contains("WPA2")) {
+            return "WPA2";
+        } else if (capabilities.contains("WPA")) {
+            return "WPA";
+        } else if (capabilities.contains("WEP")) {
+            return "WEP";
+        } else {
+            return "OPEN"; // 开放网络
+        }
     }
 }

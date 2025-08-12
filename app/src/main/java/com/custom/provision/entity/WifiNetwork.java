@@ -4,6 +4,8 @@ import android.net.wifi.ScanResult;
 
 import androidx.annotation.Nullable;
 
+import com.custom.provision.manager.WifiInstance;
+
 import java.util.Objects;
 
 /**
@@ -39,5 +41,9 @@ public class WifiNetwork {
 
     public String getSsid() {
         return ssid;
+    }
+
+    public String getwifiEncryptionType() {
+        return WifiInstance.getWifiEncryptionType(scanResult);
     }
 }
