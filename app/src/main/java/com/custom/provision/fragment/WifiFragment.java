@@ -3,6 +3,8 @@ package com.custom.provision.fragment;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
+
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
@@ -49,15 +51,6 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (checkAndRequestPermissions()) {
-//            if (!WifiInstance.getInstance().wifiEnable()) {
-//                Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
-//                getActivity().startActivity(panelIntent);
-//            }else {
-            WifiInstance.getInstance().startScan();
-//            }
-
-        }
     }
 
 
@@ -126,7 +119,15 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void initData() {
+        if (checkAndRequestPermissions()) {
+//            if (!WifiInstance.getInstance().wifiEnable()) {
+//                Intent panelIntent = new Intent(Settings.Panel.ACTION_WIFI);
+//                getActivity().startActivity(panelIntent);
+//            }else {
+            WifiInstance.getInstance().startScan();
+//            }
 
+        }
     }
 
     private boolean checkAndRequestPermissions() {
@@ -136,15 +137,6 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
             if (getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 permissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
             }
-
-            if (getActivity().checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
-                permissionsNeeded.add(Manifest.permission.ACCESS_WIFI_STATE);
-            }
-
-            if (getActivity().checkSelfPermission(Manifest.permission.CHANGE_WIFI_STATE) != PackageManager.PERMISSION_GRANTED) {
-                permissionsNeeded.add(Manifest.permission.CHANGE_WIFI_STATE);
-            }
-
             if (!permissionsNeeded.isEmpty()) {
                 requestPermissions(permissionsNeeded.toArray(new String[0]), PERMISSIONS_REQUEST_CODE);
                 return false;
@@ -210,13 +202,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             boolean allGranted = true;
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allGranted = false;
-                    break;
-                }
-            }
-
+            if (getActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED)
             if (allGranted) {
                 // 权限已授予，初始化 WiFi 扫描
                 WifiInstance.getInstance().startScan();
