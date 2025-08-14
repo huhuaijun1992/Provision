@@ -87,7 +87,11 @@ public class WifiInstance {
     public void init(Context context) {
         this.context = context.getApplicationContext();
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        handlerThread.start();
+
+        if (!handlerThread.isAlive()){
+            Log.d(TAG, "init: handlerThread start");
+            handlerThread.start();
+        }
         handler = new Handler(handlerThread.getLooper()){
             @Override
             public void dispatchMessage(@NonNull Message msg) {

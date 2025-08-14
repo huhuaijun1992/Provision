@@ -4,7 +4,6 @@ import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.provider.Settings;
@@ -15,10 +14,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -29,9 +25,10 @@ import com.custom.provision.fragment.SimCheckFragment;
 import com.custom.provision.fragment.WelcomeFragment;
 import com.custom.provision.fragment.WifiFragment;
 import com.custom.provision.manager.WifiInstance;
+import com.custom.provision.utils.GestureUtils;
 
 public class WelComeActivity extends AppCompatActivity {
-    private static final String TAG = WelComeActivity.class.getName();
+    private static final String TAG = WelComeActivity.class.getSimpleName();
     private WelcomeFragment welcomeFragment;
     private LanguageSettingFragment languageSettingFragment;
     private WifiFragment wifiFragment;
@@ -44,6 +41,8 @@ public class WelComeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_activity);
         init();
+        GestureUtils.hideNavigationBar(this);
+//        GestureUtils.disableNavigationBarSystem();
         showFragment(Operation.welcome);
         ViewGroup rootView = findViewById(android.R.id.content);
         final View contentView = rootView.getChildAt(0); // 页面内容根布局，调整它的高度
@@ -74,12 +73,18 @@ public class WelComeActivity extends AppCompatActivity {
 //        finishSetup();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int navigationMode = GestureUtils.getForeFsgNavBar(this);
+        Log.d(TAG, "onResume: 手势导航：" + navigationMode);
+    }
 
     public void finishSetup() {
         try {
             setProvisioningState();
-        }catch (Exception e){
-            Toast.makeText(this,"权限错误",Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(this, "权限错误", Toast.LENGTH_SHORT).show();
         }
         disableSelfAndFinish();
     }
@@ -88,7 +93,7 @@ public class WelComeActivity extends AppCompatActivity {
         Log.i(TAG, "Setting provisioning state");
         // Add a persistent setting to allow other apps to know the device has been provisioned.
         Settings.Global.putInt(getContentResolver(), Settings.Global.DEVICE_PROVISIONED, 1);
-        Settings.Secure.putInt(getContentResolver(), Settings.Secure. USER_SETUP_COMPLETE, 1);
+        Settings.Secure.putInt(getContentResolver(), Settings.Secure.USER_SETUP_COMPLETE, 1);
     }
 
     private void disableSelfAndFinish() {
@@ -160,5 +165,8 @@ public class WelComeActivity extends AppCompatActivity {
         WifiInstance.getInstance().init(this);
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "禁止返回", Toast.LENGTH_SHORT).show();
+    }
 }

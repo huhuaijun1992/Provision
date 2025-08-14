@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.custom.provision.R;
 import com.custom.provision.entity.LanguageOption;
-import com.custom.provision.utils.ClickUtils;
-import com.custom.provision.utils.LanguageUtils;
+import com.custom.provision.utils.GestureUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -72,7 +71,7 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
         @Override
         public void onClick(View v) {
-            if (ClickUtils.isFastClick()) {
+            if (GestureUtils.isFastClick()) {
                 return;
             }
 //            LanguageUtils.set(languageOptions.get(getAdapterPosition()).set);
