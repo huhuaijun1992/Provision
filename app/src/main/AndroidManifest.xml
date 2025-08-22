@@ -39,6 +39,7 @@
             android:excludeFromRecents="true"
             android:exported="true"
             android:theme="@style/Theme.provision"
+            android:configChanges="locale|layoutDirection|mcc|mnc|touchscreen|keyboard|keyboardHidden|navigation|screenLayout|fontScale|uiMode|orientation|screenSize|smallestScreenSize|density"
             android:windowSoftInputMode="stateHidden|adjustResize">
             <!--            <intent-filter>-->
             <!--                <action android:name="android.intent.action.MAIN" />-->

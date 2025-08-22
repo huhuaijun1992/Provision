@@ -16,14 +16,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
-//        debug {
-//            storeFile file("$rootDir${File.separator}sign-kp13.jks")
-//            storePassword 'kp132025'
-//            keyAlias 'kp13'
-//            keyPassword 'kp132025'
-//            v1SigningEnabled true
-//            v2SigningEnabled true
-//        }
+        debug  {
+            storeFile file("$rootDir${File.separator}platform.keystore")
+            storePassword 'android'
+            keyAlias 'platform'
+            keyPassword 'android'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
         release {
             storeFile file("$rootDir${File.separator}platform.keystore")
             storePassword 'android'
@@ -37,6 +37,11 @@ android {
 
     buildTypes {
         release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

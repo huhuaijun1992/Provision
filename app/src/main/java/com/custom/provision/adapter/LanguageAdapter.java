@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.custom.provision.R;
 import com.custom.provision.entity.LanguageOption;
 import com.custom.provision.utils.GestureUtils;
+import com.custom.provision.utils.LanguageUtils;
+import com.custom.provision.utils.LogUtils;
 
 import java.util.List;
 import java.util.Locale;
@@ -59,8 +61,10 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
 
         public void bind(LanguageOption languageOption, int position){
             tvLanguageName.setText(languageOption.getLabel());
-            Log.d("LanguageAdapter", "bind: "+ Locale.getDefault().getCountry());
-            if (Locale.getDefault().getCountry().equals(languageOption.getLocale().getCountry())){
+            Locale defaultLocal = Locale.getDefault();
+            Locale selectLocal = languageOption.getLocale();
+            LogUtils.d(String.format("default language: %s,current language %s",defaultLocal.toLanguageTag().toUpperCase(),defaultLocal.toLanguageTag().toUpperCase()));
+            if (defaultLocal.getLanguage().equals(selectLocal.getLanguage()) && defaultLocal.getScript().equals(selectLocal.getScript())){
                 itemRoot.setSelected(true);
                 imgSelect.setVisibility(View.VISIBLE);
             }else {
@@ -74,6 +78,8 @@ public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHo
             if (GestureUtils.isFastClick()) {
                 return;
             }
+            Locale  locale = languageOptions.get(getAdapterPosition()).getLocale();
+            LanguageUtils.setLanguage(locale);
 //            LanguageUtils.set(languageOptions.get(getAdapterPosition()).set);
         }
     }

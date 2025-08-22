@@ -13,11 +13,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.custom.provision.Operation;
+import com.custom.provision.R;
 import com.custom.provision.WelComeActivity;
 import com.custom.provision.databinding.WelcomeFragmentBinding;
+import com.custom.provision.utils.LogUtils;
 
 public class WelcomeFragment extends BaseFragment{
     private static final int[] CORNER_ORDER = {0, 1, 2, 3}; // 左上, 右上, 右下, 左下
@@ -154,7 +155,7 @@ public class WelcomeFragment extends BaseFragment{
             Intent intent = new Intent();
             intent.setClassName("com.weibu.factorytest","com.weibu.factorytest.FactoryTest");
             startActivity(intent);
-            Log.d(TAG, "onSequenceCompleted: 顺序点击成功");
+            LogUtils.d( "onSequenceCompleted: 顺序点击成功");
         }catch (Exception e){
             // 处理应用未安装或Activity不存在的情况
             Toast.makeText(getContext(), "无法打开应用", Toast.LENGTH_SHORT).show();
@@ -169,6 +170,11 @@ public class WelcomeFragment extends BaseFragment{
         super.onDestroyView();
         // 移除所有回调，防止内存泄漏
         timeoutHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void languageChange() {
+        binding.tvWelcome.setText(getString(R.string.welcome));
     }
 
     public static WelcomeFragment newInstance() {

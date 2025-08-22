@@ -27,11 +27,12 @@ public class LanguageOption {
 
     public static List<LanguageOption> getSupportedLanguages() {
         return Arrays.asList(
-                new LanguageOption("中文简体",Locale.CHINA),
-                new LanguageOption("中文繁體", Locale.TRADITIONAL_CHINESE),
-                new LanguageOption("English",Locale.ENGLISH),
+                new LanguageOption("中文简体",new Locale.Builder().setLanguage("zh").setRegion("CN").setScript("Hans").build()),
+                new LanguageOption("中文繁體", new Locale.Builder().setLanguage("zh").setRegion("TW").setScript("Hant").build()),
+                new LanguageOption("English",Locale.US),
                 new LanguageOption("한국어", Locale.KOREA),
                 new LanguageOption("日本語", Locale.JAPAN)
+
         );
     }
 }

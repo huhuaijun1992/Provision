@@ -21,10 +21,10 @@
             android:src="@drawable/welcome_icon" />
 
         <TextView
+            android:id="@+id/tv_welcome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="38px"
-            android:text="@string/welcome"
             android:textColor="#333333"
             android:textSize="40px"
             android:textStyle="bold" />

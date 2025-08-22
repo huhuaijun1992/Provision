@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.custom.provision.utils.LogUtils;
+
 /**
  * Author: created by huhuaijun on 2025/8/5 17:06
  * Function:
@@ -21,12 +23,13 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach:"+ this.getClass().getSimpleName());
+        LogUtils.d("onAttach:"+ this.getClass().getSimpleName());
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtils.d("onCreate:"+ this.getClass().getSimpleName());
     }
 
     @Nullable
@@ -46,16 +49,19 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        LogUtils.d("onResume:"+ this.getClass().getSimpleName());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LogUtils.d("onDestroy:"+ this.getClass().getSimpleName());
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        LogUtils.d("onDetach:"+ this.getClass().getSimpleName());
     }
 
     public abstract View getContentView(@NonNull LayoutInflater inflater, @Nullable  ViewGroup container);
@@ -65,4 +71,6 @@ public abstract class BaseFragment extends Fragment {
     public abstract void initListeners();
 
     public abstract void initData();
+
+    public abstract void languageChange();
 }

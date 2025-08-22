@@ -59,6 +59,15 @@ public class LanguageSettingFragment extends BaseFragment implements View.OnClic
 
     }
 
+    @Override
+    public void languageChange() {
+        binding.tvTitle.setText(getString(R.string.language_setting));
+        binding.bottomView.tvBack.setText(getString(R.string.bottom_back));
+        binding.bottomView.tvSkip.setText(getString(R.string.bottom_skip));
+        binding.bottomView.tvNext.setText(getString(R.string.bottom_next));
+        adapter.notifyDataSetChanged();
+    }
+
 
     public static LanguageSettingFragment newInstance() {
 

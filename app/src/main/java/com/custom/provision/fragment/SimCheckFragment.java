@@ -173,4 +173,9 @@ public class SimCheckFragment extends BaseFragment implements View.OnClickListen
             }
         }
     }
+
+    @Override
+    public void languageChange() {
+
+    }
 }

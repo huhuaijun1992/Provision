@@ -231,4 +231,9 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
         // 将光标移动到文本末尾
         binding.editPassword.setSelection(binding.editPassword.getText().length());
     }
+
+    @Override
+    public void languageChange() {
+
+    }
 }
