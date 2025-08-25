@@ -42,7 +42,8 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <include
         android:id="@+id/bottom_view"
@@ -104,7 +105,11 @@
                     android:layout_height="match_parent"
                     android:layout_toLeftOf="@+id/img_password_show"
                     android:background="@null"
-                    android:inputType="textPassword" />
+                    android:inputType="textPassword"
+                    android:textSize="40px"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    />
             </RelativeLayout>
 
             <LinearLayout

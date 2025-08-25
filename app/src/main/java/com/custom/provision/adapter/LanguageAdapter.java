@@ -22,11 +22,12 @@ import java.util.Locale;
 
 public class LanguageAdapter extends RecyclerView.Adapter<LanguageAdapter.ViewHolder> {
     private Context context;
-    private List<LanguageOption> languageOptions = LanguageOption.getSupportedLanguages();
+    private List<LanguageOption> languageOptions;
 
 
     public LanguageAdapter(Context context) {
         this.context = context;
+        languageOptions = LanguageOption.getSupportedLanguages(context);
     }
 
     @NonNull

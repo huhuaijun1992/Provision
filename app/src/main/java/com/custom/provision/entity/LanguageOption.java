@@ -1,5 +1,9 @@
 package com.custom.provision.entity;
 
+import android.content.Context;
+
+import com.custom.provision.R;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -25,14 +29,13 @@ public class LanguageOption {
         return locale;
     }
 
-    public static List<LanguageOption> getSupportedLanguages() {
+    public static List<LanguageOption> getSupportedLanguages(Context context) {
         return Arrays.asList(
-                new LanguageOption("中文简体",new Locale.Builder().setLanguage("zh").setRegion("CN").setScript("Hans").build()),
-                new LanguageOption("中文繁體", new Locale.Builder().setLanguage("zh").setRegion("TW").setScript("Hant").build()),
-                new LanguageOption("English",Locale.US),
-                new LanguageOption("한국어", Locale.KOREA),
-                new LanguageOption("日本語", Locale.JAPAN)
-
+                new LanguageOption(context.getString(R.string.language_china),new Locale.Builder().setLanguage("zh").setRegion("CN").setScript("Hans").build()),
+                new LanguageOption(context.getString(R.string.language_china_tw), new Locale.Builder().setLanguage("zh").setRegion("TW").setScript("Hant").build()),
+                new LanguageOption(context.getString(R.string.language_english),Locale.US),
+                new LanguageOption(context.getString(R.string.language_korean), Locale.KOREA),
+                new LanguageOption(context.getString(R.string.language_japanese), Locale.JAPAN)
         );
     }
 }

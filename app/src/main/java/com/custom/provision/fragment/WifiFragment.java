@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.blankj.utilcode.util.KeyboardUtils;
 import com.custom.provision.Operation;
 import com.custom.provision.R;
 import com.custom.provision.WelComeActivity;
@@ -82,6 +83,7 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
         binding.bottomView.tvNext.setOnClickListener(this);
         binding.bottomView.tvBack.setOnClickListener(this);
         binding.bottomView.tvSkip.setOnClickListener(this);
+        binding.password.setOnClickListener(this);
         binding.cancle.setOnClickListener(this);
         binding.connect.setOnClickListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -178,10 +180,12 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
         } else if (id == R.id.img_password_show) {
             togglePasswordVisibility();
         } else if (id == R.id.cancle) {
+            KeyboardUtils.hideSoftInput(binding.editPassword);
             binding.password.setVisibility(GONE);
             binding.editPassword.setText("");
             WifiInstance.getInstance().getCurrentWaitConnectWifiNetwork().setValue(null);
         } else if (id == R.id.connect) {
+            KeyboardUtils.hideSoftInput(binding.editPassword);
             String password = binding.editPassword.getText().toString();
             if (TextUtils.isEmpty(password)) {
                 Toast.makeText(getContext(), R.string.password_empty_tip, Toast.LENGTH_SHORT).show();
@@ -193,6 +197,8 @@ public class WifiFragment extends BaseFragment implements View.OnClickListener {
                 binding.editPassword.setText("");
 
             }
+        } else if (id == R.id.password){
+            KeyboardUtils.hideSoftInput(binding.editPassword);
         }
     }
 
